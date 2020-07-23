@@ -4,7 +4,8 @@
   "description": "A simple todo list app built in HTML, CSS and JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "git" : "git add . && git commit -m 'script' && git push origin master"
   },
   "repository": {
     "type": "git",
