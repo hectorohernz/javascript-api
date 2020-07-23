@@ -29,6 +29,7 @@ document.getElementById('item').addEventListener('keydown', function (e) {
 function addItem (value) {
   addItemToDOM(value);
   document.getElementById('item').value = '';
+  sendItemtoApi(value);
 
   data.todo.push(value);
   dataObjectUpdated();
@@ -120,3 +121,24 @@ function addItemToDOM(text, completed) {
 
   list.insertBefore(item, list.childNodes[0]);
 }
+
+
+const sendItemtoApi = (item) => {
+  
+  let req = new XMLHttpRequest(); // built-in XMLHttpRequest Used to request data from a server 
+  req.open("POST", "/add"); // initializes a newly-created request
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.send(JSON.stringify({ item: item })); // sends the data
+
+  req.addEventListener("load", () => {
+    console.log(req.responseText);
+    console.log("Request done!");
+  })
+
+  req.addEventListener("error", () => {
+    console.log("Error, something has happened.");
+  })
+
+
+
+};
