@@ -25,7 +25,7 @@ try { // Attempting to connect to the database
     console.log(e);
 }
 
-app.post('/add', (req, res) => { 
+app.post('/task/add', (req, res) => { 
     console.log(req.body);
     connection.query('INSERT INTO tasks (description) VALUES (?)', [req.body.item], (error, results) => {
         if (error) return res.json({ error: error });
@@ -39,6 +39,25 @@ app.post('/add', (req, res) => {
             });
         });
 
+
+    });
+});
+
+app.get('/task', (req,res) => {
+    connection.query("SELECT * FROM tasks ORDER BY created DESC", (error,results) => {
+        if(error) return res.json({error: error})
+
+        res.json(// List the completed task and uncompleted task
+           results
+        )
+    });
+});
+
+app.post('/task/:id/remove', (req,res) => {
+    connection.query('DELETE FROM tasks WHERE id = ?', [req.params.id], (error,results) => {
+        if (error) return res.json({ error: error });
+
+        res.json({});
 
     });
 });
