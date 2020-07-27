@@ -1,12 +1,12 @@
 const mysql = require('mysql2');
 const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
+
 require("dotenv").config();
 
 
 app.use(express.static(__dirname + "/public"));
-app.use(bodyParser.json());
+app.use(express.json());
 
 
 const connection = mysql.createConnection({ // Creating a connection to local sql database 
@@ -64,9 +64,22 @@ app.post('/task/:id/remove', (req,res) => {
 });
 
 
-    const PORT = process.env.PORT || 5000;
+app.post('/task/:id/update', (req,res) => {
+    connection.query("UPDATE tasks SET completed = ? WHERE id = ?",[req.body.completed , req.params.id],(error,results ) => {
+        if(error) return res.json({ error:error });
 
-    app.listen(PORT, (req, res) => {
-        console.log(`The applcation is active on port ${PORT}`);
-    });
+        res.json({});
+    })
+});
+
+
+
+
+
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, (req, res) => {
+    console.log(`The applcation is active on port ${PORT}`);
+});
 

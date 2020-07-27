@@ -31,10 +31,7 @@ function addItem (value) {
 
   sendTasktoApi(value, (item) => {
     console.log(item);
-    
     addItemToDOM(item);
-
-
   });
 }
 
@@ -65,11 +62,6 @@ function removeItem() {
   })
 
 
-
-
-
-
-
 }
 
 function completeItem() {
@@ -77,12 +69,28 @@ function completeItem() {
   var parent = item.parentNode;
   var id = parent.id;
   var value = item.innerText;
+  let taskId = Number(item.getAttribute("data-id"));
 
   // Check if the item should be added to the completed list or to re-added to the todo list
   var target = (id === 'todo') ? document.getElementById('completed'):document.getElementById('todo');
 
-  parent.removeChild(item);
-  target.insertBefore(item, target.childNodes[0]);
+  let req = new XMLHttpRequest(); // built-in XMLHttpRequest Used to request data from a server 
+  req.open("POST", "/task/" + taskId + "/update"); // initializes a newly-created request
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.send(JSON.stringify({completed: (id === 'todo') })); // sends the data
+
+  req.addEventListener("load", () => {
+    let results = JSON.parse(req.responseText);
+    if(results.error) return console.log(results.error);
+    parent.removeChild(item);
+    target.insertBefore(item, target.childNodes[0]);
+
+  })
+
+  req.addEventListener('error', (e) => {
+    console.log("Error, something has happened.");
+    console.log(e);
+  })
 }
 
 // Adds a new item to the todo list
@@ -139,8 +147,6 @@ const sendTasktoApi = (item, callback) => {
     console.log("Error, something has happened.");
   })
 
-
-
 };
 
 // Will fetch all task from api
@@ -150,7 +156,6 @@ let req = new XMLHttpRequest();
 req.open("GET", '/task');
 
 req.send();
-
 
 req.addEventListener("load", () => {
   let results = JSON.parse(req.responseText);
